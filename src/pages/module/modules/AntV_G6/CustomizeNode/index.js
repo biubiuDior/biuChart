@@ -7,9 +7,6 @@
 
 import styles from "./index.less";
 import {useEffect, useRef, useState} from "react";
-import classNames from "classnames";
-import {NodeEvent} from "@antv/g6";
-import useThrottle from "@/components/useThrottle";
 
 const CustomizeNode = (props) => {
   const {

@@ -125,4 +125,4 @@ const GridLayout = (props) => {
     </div>
   );
 }
-export default GridLayout;
+export default React.memo(GridLayout);

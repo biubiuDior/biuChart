@@ -6,7 +6,7 @@ import routers from './routes'; // 路由菜单
 
 export default defineConfig({
   qiankun: {
-    // slave: {},
+    slave: {},
   },
   antd: {},
   access: {},
@@ -15,7 +15,7 @@ export default defineConfig({
   request: {},
   dva: {},
   title: defaultSetting['title'],
-  layout: {},
+  layout: false,
   // mock: false,
   routes: routers,
   npmClient: 'npm',

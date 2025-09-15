@@ -7,12 +7,12 @@
 
 import styles from "./index.less";
 import {useEffect, useRef, useState} from "react";
-import {Spin} from "antd";
+import {Spin, Tooltip} from "antd";
 import {ConcentricLayout, ExtensionCategory, Graph, register} from '@antv/g6';
 import { ReactNode } from '@antv/g6-extension-react';
 import {useDispatch} from "react-redux";
-import CustomizeNode from "@/pages/module/modules/AntV_G6/CustomizeNode";
-import {InfoCircleOutlined} from "@ant-design/icons";
+import CustomizeNode from "./CustomizeNode";
+import {AimOutlined, ExportOutlined, InfoCircleOutlined, ZoomInOutlined, ZoomOutOutlined} from "@ant-design/icons";
 
 // 注册react节点
 register(ExtensionCategory.NODE, 'react', ReactNode);
@@ -143,30 +143,7 @@ const AntV_G6 = (props) => {
         },
       ],
       plugins: [
-        {
-          type: 'toolbar',
-          position: 'top-left',
-          onClick: (value) => {
-            switch (value) {
-              case 'zoom-in':
-                graph.zoomBy(1.2, {duration: 300,});
-                break;
-              case 'zoom-out':
-                graph.zoomBy(0.8, {duration: 300,});
-                break;
-              case 'auto-fit':
-                graph.fitView();
-                break;
-            }
-          },
-          getItems: () => {
-            return [
-              { id: 'zoom-in', value: 'zoom-in' },// 放大
-              { id: 'zoom-out', value: 'zoom-out' },// 缩小
-              { id: 'auto-fit', value: 'auto-fit' },// 自适应画布
-            ];
-          },
-        },
+
       ],
       animation: false,
     });
@@ -174,10 +151,66 @@ const AntV_G6 = (props) => {
     graphRef.current = graph;
 
     graph.render();
-  },[treeData])
+  },[treeData]);
+
+  const toolData = [
+    {key: 'zoom-in', icon: <ZoomInOutlined />, tip: "放大"},
+    {key: 'zoom-out', icon: <ZoomOutOutlined />, tip: "缩小"},
+    {key: 'auto-fit', icon: <AimOutlined />, tip: "自适应画布"},
+    {key: 'export', icon: <ExportOutlined />, tip: "导出图片"},
+  ]
+
+  const toolSelect = (type) => {
+    switch (type) {
+      case 'zoom-in':
+        graphRef.current.zoomBy(1.2, {duration: 300,});
+        break;
+      case 'zoom-out':
+        graphRef.current.zoomBy(0.8, {duration: 300,});
+        break;
+      case 'auto-fit':
+        graphRef.current.fitView();
+        break;
+      case 'export':
+        downloadImage();
+        break;
+    }
+  }
+
+  const downloadImage = () => {
+    const dataURL = graphRef.current.toDataURL();
+    console.log(dataURL)
+    // const [head, content] = dataURL.split(',');
+    // const contentType = head.match(/:(.*?);/)?.[1];
+    //
+    // const bstr = atob(content);
+    // let length = bstr.length;
+    // const u8arr = new Uint8Array(length);
+    //
+    // while (length--) {
+    //   u8arr[length] = bstr.charCodeAt(length);
+    // }
+    //
+    // const blob = new Blob([u8arr], { type: contentType });
+    //
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = 'graph.png';
+    // a.click();
+  }
 
   return (
     <div className={styles.g6}>
+      <div className={styles.toolbar}>
+        {toolData.map((item,index) => {
+          return <div onClick={() => toolSelect(item.key)}>
+            <Tooltip title={item.tip} placement={"right"}>
+              {item.icon}
+            </Tooltip>
+          </div>
+        })}
+      </div>
       <div className={styles.tips}>
         <div className={styles.icon}>
           <InfoCircleOutlined />

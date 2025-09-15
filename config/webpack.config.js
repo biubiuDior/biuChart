@@ -10,6 +10,7 @@ const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i;
+const packageName = require('../package.json').name;
 
 /**
  * memo，当前 webpack-chain对象
@@ -25,46 +26,6 @@ const webpackConfig = (memo, { env, webpack, createCSSRule }) => {
     {
       languages: ['javascript', 'typescript', 'json', 'echarts', 'html', 'css'], // 支持高亮显示的代码语言
       features: ["coreCommands", "find", "format", "folding", 'smartSelect', 'snippets', 'suggest', 'hover']
-    }
-  ])
-  // 图像最小化器, 打包图像资源压缩优化
-  memo.plugin("image-minimizer-webpack-plugin").use(ImageMinimizerPlugin, [
-    {
-      minimizer: {
-        implementation: ImageMinimizerPlugin.imageminMinify,
-        options: {
-          // Lossless optimization with custom option
-          // Feel free to experiment with options for better result for you
-          plugins: [
-            ["gifsicle", { interlaced: true }],
-            ["jpegtran", { progressive: true }],
-            ["optipng", { optimizationLevel: 5 }],
-            // Svgo configuration here https://github.com/svg/svgo#configuration
-            [
-              "svgo",
-              {
-                plugins: [
-                  {
-                    name: "preset-default",
-                    params: {
-                      overrides: {
-                        removeViewBox: false,
-                        addAttributesToSVGElement: {
-                          params: {
-                            attributes: [
-                              { xmlns: "http://www.w3.org/2000/svg" },
-                            ],
-                          },
-                        },
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
-          ],
-        },
-      },
     }
   ])
   // 压缩JavaScript同时去掉console-log

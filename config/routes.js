@@ -8,8 +8,8 @@
 export default [
   {
     path: '/',
-    layout: false, // 取消默认布局
-    component: '../layouts',
+    // layout: false, // 取消默认布局
+    // component: '../layouts',
     routes: [
       {
         path: '/',
